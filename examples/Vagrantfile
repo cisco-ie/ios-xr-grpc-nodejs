@@ -1,0 +1,117 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Add shared folder pathing here.
+# host_src is a relative path.
+# guest_dest MUST be an absolute path on the guest. Does not need to exist.
+shares = [
+    {
+        :host_src => '../',
+        :guest_dest => '/xrgrpc/'
+    }
+]
+
+# IOS-XR 
+# hostname is name of box
+# links contains used link params
+# ports contains port params, objects are {:guest=>?, :host=>?}
+# ram is ram for machine
+iosxrs = [
+  {
+    :hostname => "testiosxr",
+    :links => [{
+        :network => "private_network",
+        :vbox_intnet => "intranet",
+        :ip => "11.1.1.254",
+        :auto_config => false,
+    }],
+    :ports => [{
+        :guest => 57500,
+        :host => 57500
+    }],
+    :ram => 4096
+  }
+]
+
+# Clients that are not IOS-XRs and a server-like role
+servers = [
+  {
+    :hostname => "testclient",
+    :links => [{
+        :network => "private_network",
+        :vbox_intnet => "intranet",
+        :ip => "11.1.1.2",
+        :auto_config => true,
+    }],
+    :ports => [],
+    :ram => 768
+  }
+]
+
+# Insert any other sections if necessary. Such as clients.
+
+Vagrant.configure(2) do |config|
+
+    # Provision IOS-XR boxes.
+    # Does not have guest additions and thus does not support some options.
+    iosxrs.each do |machine|
+        config.vm.define machine[:hostname] do |node|
+            node.vm.box = "IOS-XRv"
+            node.vm.usable_port_range = (2200..2250)
+            # Does not support setting hostname.
+            #node.vm.hostname = machine[:hostname]
+            # Cannot set IP from Vagrantfile
+            machine[:links].each do |link|
+                node.vm.network link[:network], virtualbox__intnet: link[:vbox_intnet], auto_config: link[:auto_config]
+            end
+            machine[:ports].each do |port|
+                node.vm.network "forwarded_port", guest: port[:guest], host: port[:host]
+            end
+            node.ssh.password = "vagrant"
+            node.vm.provider "virtualbox" do |vb|
+                vb.customize ["modifyvm", :id, "--memory", machine[:ram]]
+                vb.name = machine[:hostname]
+            end
+            # Mounted folders not supported? Need to figure out default way.
+            #shares.each do |share|
+            #    node.vm.synced_folder share[:host_src], share[:guest_dest]
+            #end
+            # Copy bootstrap config to router because no shared folders.
+            config.vm.provision "file", source: "bootstrap/config/#{machine[:hostname]}", destination: "/home/vagrant/#{machine[:hostname]}"
+            node.vm.provision "shell" do |s|
+              s.path = "bootstrap/iosxr.sh"
+              # Arguments passed in case we want to make a reusable script that generates configs using hostname/ip
+              # instead of static config files per device.
+              s.args = [machine[:hostname]]
+            end
+        end
+    end
+
+    # Provision servers.
+    servers.each do |machine|
+        config.vm.define machine[:hostname] do |node|
+            node.vm.box = "ubuntu/trusty64"
+            node.vm.usable_port_range = (2250..2300)
+            node.vm.hostname = machine[:hostname]
+            machine[:links].each do |link|
+                node.vm.network link[:network], virtualbox__intnet: link[:vbox_intnet], auto_config: link[:auto_config], ip: link[:ip]
+            end
+            machine[:ports].each do |port|
+                node.vm.network "forwarded_port", guest: port[:guest], host: port[:host]
+            end
+            node.ssh.password = "vagrant"
+            node.vm.provider "virtualbox" do |vb|
+                vb.customize ["modifyvm", :id, "--memory", machine[:ram]]
+                vb.name = machine[:hostname]
+            end
+            # Add synced folders to guests.
+            shares.each do |share|
+                node.vm.synced_folder share[:host_src], share[:guest_dest]
+            end
+            node.vm.provision "shell" do |s|
+              s.path = "bootstrap/server.sh"
+              s.args = [machine[:hostname]]
+            end
+        end
+    end
+end

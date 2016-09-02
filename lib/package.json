@@ -6,6 +6,10 @@
   "scripts": {
     "test": "testxr"
   },
+  "dependencies": {
+    "grpc": "^0.15.0",
+    "google-protobuf": "^3.0.0"
+  },
   "keywords": [
     "iosxr",
     "grpc",

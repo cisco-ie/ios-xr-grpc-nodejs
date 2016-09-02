@@ -1,0 +1,17 @@
+{
+  "name": "xrclients",
+  "version": "0.0.1",
+  "description": "Clients for CgRPC IOS-XR",
+  "main": "client.js",
+  "dependencies": {
+    "grpc": "^0.15.0",
+    "google-protobuf": "^3.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "repository": {},
+  "keywords": [],
+  "author": "Innovation Edge @ Cisco",
+  "license": "Apache v2",
+  "homepage": ""
+}
