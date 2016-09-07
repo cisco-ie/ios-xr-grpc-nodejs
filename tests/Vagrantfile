@@ -22,6 +22,7 @@ iosxrs = [
     :links => [{
         :network => "private_network",
         :vbox_intnet => "intranet",
+        #ip is not applied right now, no auto config
         :ip => "11.1.1.254",
         :auto_config => false,
     }],

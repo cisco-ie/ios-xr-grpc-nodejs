@@ -5,7 +5,7 @@ function main() {
 		username: 'vagrant',
 		password: 'vagrant'
 	};
-	//var yangpath = '{"Cisco-IOS-XR-infra-statsd-oper": [null]}';
+
 	var yangpath = '{"Cisco-IOS-XR-ip-static-cfg:router-static": [null]}';
 	var client = xrGrpc('11.1.1.254', 57500, null, metadata, null);
 	var stream = client.getConfig(0, yangpath, null);
