@@ -17,6 +17,13 @@ function main() {
 	testCreateMetadata();
 	// Message Method Testing
 	testMsgConfigArgs();
+	testMsgConfigGetArgs();
+	testMsgCliConfigArgs();
+	testMsgCommitReplaceArgs();
+	testMsgCommitArgs();
+	testMsgDiscardChangesArgs();
+	testMsgGetOperArgs();
+	testMsgShowCmdArgs();
 }
 
 function defaultInstance() {
@@ -113,5 +120,147 @@ function testMsgConfigArgs() {
 		});
 	});
 }
+
+function testMsgConfigGetArgs() {
+	describe('index.js', function() {
+		describe('#msgs.ConfigGetArgs()', function() {
+			it('should return a ConfigGetArgs object.', function() {
+				var testParams = {
+					reqId: 0,
+					yangPathJSON: 'test'
+				};
+				var testGrpc = defaultInstance();
+				var testArg = testGrpc.msgs.ConfigGetArgs(testParams.reqId, testParams.yangPathJSON);
+				var index = 0;
+				for (var key in testParams) {
+					assert(testParams[key], testArg.array[index]);
+					index++;
+				}
+			});
+		});
+	});
+}
+
+function testMsgCliConfigArgs() {
+	describe('index.js', function() {
+		describe('#msgs.CliConfigArgs()', function() {
+			it('should return a CliConfigArgs object.', function() {
+				var testParams = {
+					reqId: 0,
+					cli: 'test'
+				};
+				var testGrpc = defaultInstance();
+				var testArg = testGrpc.msgs.CliConfigArgs(testParams.reqId, testParams.cli);
+				var index = 0;
+				for (var key in testParams) {
+					assert(testParams[key], testArg.array[index]);
+					index++;
+				}
+			});
+		});
+	});
+}
+
+function testMsgCommitReplaceArgs() {
+	describe('index.js', function() {
+		describe('#msgs.CommitReplaceArgs()', function() {
+			it('should return a CommitReplaceArgs object.', function() {
+				var testParams = {
+					reqId: 0,
+					cli: 'test',
+					yangJSON: 'test1'
+				};
+				var testGrpc = defaultInstance();
+				var testArg = testGrpc.msgs.CommitReplaceArgs(testParams.reqId, testParams.cli, testParams.yangJSON);
+				var index = 0;
+				for (var key in testParams) {
+					assert(testParams[key], testArg.array[index]);
+					index++;
+				}
+			});
+		});
+	});
+}
+
+function testMsgCommitArgs() {
+	describe('index.js', function() {
+		describe('#msgs.CommitArgs()', function() {
+			it('should return a CommitArgs object.', function() {
+				var testParams = {
+					commitMsg: 'test',
+					reqId: 0
+				};
+				var testGrpc = defaultInstance();
+				var testArg = testGrpc.msgs.CommitArgs(testParams.reqId, testParams.commitMsg);
+				var index = 0;
+				for (var key in testParams) {
+					assert(testParams[key], testArg.array[index]);
+					index++;
+				}
+			});
+		});
+	});
+}
+
+function testMsgDiscardChangesArgs() {
+	describe('index.js', function() {
+		describe('#msgs.DiscardChangesArgs()', function() {
+			it('should return a DiscardChangesArgs object.', function() {
+				var testParams = {
+					reqId: 0,
+				};
+				var testGrpc = defaultInstance();
+				var testArg = testGrpc.msgs.DiscardChangesArgs(testParams.reqId);
+				var index = 0;
+				for (var key in testParams) {
+					assert(testParams[key], testArg.array[index]);
+					index++;
+				}
+			});
+		});
+	});
+}
+
+function testMsgGetOperArgs() {
+	describe('index.js', function() {
+		describe('#msgs.GetOperArgs()', function() {
+			it('should return a GetOperArgs object.', function() {
+				var testParams = {
+					reqId: 0,
+					yangPathJSON: 'test'
+				};
+				var testGrpc = defaultInstance();
+				var testArg = testGrpc.msgs.GetOperArgs(testParams.reqId, testParams.yangPathJSON);
+				var index = 0;
+				for (var key in testParams) {
+					assert(testParams[key], testArg.array[index]);
+					index++;
+				}
+			});
+		});
+	});
+}
+
+function testMsgShowCmdArgs() {
+	describe('index.js', function() {
+		describe('#msgs.ShowCmdArgs()', function() {
+			it('should return a ShowCmdArgs object.', function() {
+				var testParams = {
+					reqId: 0,
+					cli: 'test'
+				};
+				var testGrpc = defaultInstance();
+				var testArg = testGrpc.msgs.ShowCmdArgs(testParams.reqId, testParams.cli);
+				var index = 0;
+				for (var key in testParams) {
+					assert(testParams[key], testArg.array[index]);
+					index++;
+				}
+			});
+		});
+	});
+}
+
+
 
 main();
