@@ -1,0 +1,9 @@
+!! iosxr1 configuration
+!
+interface GigabitEthernet0/0/0/0
+ ipv4 address 11.1.1.254 255.255.255.0
+ no shutdown
+!
+grpc
+ port 57500
+!
