@@ -1,3 +1,10 @@
+/**
+ * Basic validation tests showing that methods are functional.
+ * Depends on IOS-XRv and supplied Vagrant configuration.
+ * Accessible via /xrgrpc/tests/
+ * ~/.npm_global/bin/mocha index.js
+ */
+
 var assert = require('assert');
 var xrGrpc = require('../lib/index.js');
 
@@ -24,6 +31,20 @@ function main() {
 	testMsgDiscardChangesArgs();
 	testMsgGetOperArgs();
 	testMsgShowCmdArgs();
+	// Service Testing
+	testGetConfig();
+	testMergeConfig();
+	testDeleteConfig();
+	testReplaceConfig();
+	/** Uncertain on implementation
+	testCliConfig();
+	testCommitReplace();
+	testCommitConfig();
+	testConfigDiscardChanges();
+	*/
+	testGetOper();
+	testShowCmdTextOutput();
+	testShowCmdJSONOutput();
 }
 
 function defaultInstance() {
@@ -52,6 +73,8 @@ function testToString() {
 		describe('#toString()', function() {
 			it('should return stringified parameters and clients.', function() {
 				console.log('Not yet implemented.');
+				var testGrpc = defaultInstance();
+				console.log(testGrpc);
 				assert(true, true);
 			});
 		});
@@ -113,7 +136,7 @@ function testMsgConfigArgs() {
 				var testArg = testGrpc.msgs.ConfigArgs(testParams.reqId, testParams.yangJSON);
 				var index = 0;
 				for (var key in testParams) {
-					assert(testParams[key], testArg.array[index]);
+					assert(true, testParams[key] == testArg.array[index]);
 					index++;
 				}
 			});
@@ -133,7 +156,7 @@ function testMsgConfigGetArgs() {
 				var testArg = testGrpc.msgs.ConfigGetArgs(testParams.reqId, testParams.yangPathJSON);
 				var index = 0;
 				for (var key in testParams) {
-					assert(testParams[key], testArg.array[index]);
+					assert(true, testParams[key] == testArg.array[index]);
 					index++;
 				}
 			});
@@ -153,7 +176,7 @@ function testMsgCliConfigArgs() {
 				var testArg = testGrpc.msgs.CliConfigArgs(testParams.reqId, testParams.cli);
 				var index = 0;
 				for (var key in testParams) {
-					assert(testParams[key], testArg.array[index]);
+					assert(true, testParams[key] == testArg.array[index]);
 					index++;
 				}
 			});
@@ -174,7 +197,7 @@ function testMsgCommitReplaceArgs() {
 				var testArg = testGrpc.msgs.CommitReplaceArgs(testParams.reqId, testParams.cli, testParams.yangJSON);
 				var index = 0;
 				for (var key in testParams) {
-					assert(testParams[key], testArg.array[index]);
+					assert(true, testParams[key] == testArg.array[index]);
 					index++;
 				}
 			});
@@ -194,7 +217,7 @@ function testMsgCommitArgs() {
 				var testArg = testGrpc.msgs.CommitArgs(testParams.reqId, testParams.commitMsg);
 				var index = 0;
 				for (var key in testParams) {
-					assert(testParams[key], testArg.array[index]);
+					assert(true, testParams[key] == testArg.array[index]);
 					index++;
 				}
 			});
@@ -213,7 +236,7 @@ function testMsgDiscardChangesArgs() {
 				var testArg = testGrpc.msgs.DiscardChangesArgs(testParams.reqId);
 				var index = 0;
 				for (var key in testParams) {
-					assert(testParams[key], testArg.array[index]);
+					assert(true, testParams[key] == testArg.array[index]);
 					index++;
 				}
 			});
@@ -233,7 +256,7 @@ function testMsgGetOperArgs() {
 				var testArg = testGrpc.msgs.GetOperArgs(testParams.reqId, testParams.yangPathJSON);
 				var index = 0;
 				for (var key in testParams) {
-					assert(testParams[key], testArg.array[index]);
+					assert(true, testParams[key] == testArg.array[index]);
 					index++;
 				}
 			});
@@ -253,9 +276,207 @@ function testMsgShowCmdArgs() {
 				var testArg = testGrpc.msgs.ShowCmdArgs(testParams.reqId, testParams.cli);
 				var index = 0;
 				for (var key in testParams) {
-					assert(testParams[key], testArg.array[index]);
+					assert(true, testParams[key] == testArg.array[index]);
 					index++;
 				}
+			});
+		});
+	});
+}
+
+function testGetConfig() {
+	describe('index.js', function() {
+		describe('#getConfig()', function() {
+			it('should get the config of the YANG path.', function(done) {
+				var testYANGPath = '{"Cisco-IOS-XR-ip-static-cfg:router-static": [null]}';				
+				var testGrpc = defaultInstance();
+				var testRequest = testGrpc.getConfig(0, testYANGPath);
+				testRequest.on('data', function(data) {
+					data = data.toObject();
+					if (data.errors) {
+						assert(true, false);
+						// Not really certain how to properly do this.
+						done(data.errors);
+					} else {
+						assert(true, true);
+						done();
+					}
+				});
+			});
+		});
+	});
+}
+
+function testMergeConfig() {
+	describe('index.js', function() {
+		describe('#mergeConfig()', function() {
+			it('should merge configuration data.', function(done) {
+				var testGrpc = defaultInstance();
+				var testYANG = '{"Cisco-IOS-XR-ip-static-cfg:router-static": {"default-vrf": {"address-family": {"vrfipv4": {"vrf-unicast": {"vrf-prefixes": {"vrf-prefix": [{"prefix": "1.2.3.6", "vrf-route": {"vrf-next-hop-table": {"vrf-next-hop-next-hop-address": [{"next-hop-address": "10.0.2.2"}]}}, "prefix-length": 32}]}}}}}}}';
+				var testRequest = testGrpc.mergeConfig(0, testYANG);
+				testRequest.on('error', function(error) {
+					if (error) {
+						assert(true, false);
+						done(error);
+					} else {
+						assert(true, true);
+						done();
+					}
+				});
+				testRequest.on('data', function(data) {
+					if (data.errors) {
+						assert(true, false);
+						done(data.errors);
+					} else {
+						assert(true, true);
+						done();
+					}
+				});
+			});
+		});
+	});
+}
+
+function testDeleteConfig() {
+	describe('index.js', function() {
+		describe('#deleteConfig()', function() {
+			it('should delete configuration data.', function(done) {
+				var testGrpc = defaultInstance();
+				var testYANG = '{"Cisco-IOS-XR-ip-static-cfg:router-static": {"default-vrf": {"address-family": {"vrfipv4": {"vrf-unicast": {"vrf-prefixes": {"vrf-prefix": [{"prefix": "1.2.3.6", "vrf-route": {"vrf-next-hop-table": {"vrf-next-hop-next-hop-address": [{"next-hop-address": "10.0.2.2"}]}}, "prefix-length": 32}]}}}}}}}';
+				var testRequest = testGrpc.deleteConfig(0, testYANG);
+				testRequest.on('error', function(error) {
+					if (error) {
+						assert(true, false);
+						done(error);
+					} else {
+						assert(true, true);
+						done();
+					}
+				});
+				testRequest.on('data', function(data) {
+					if (data.errors) {
+						assert(true, false);
+						done(data.errors);
+					} else {
+						assert(true, true);
+						done();
+					}
+				});
+			});
+		});
+	});
+}
+
+function testReplaceConfig() {
+	describe('index.js', function() {
+		describe('#replaceConfig()', function() {
+			it('should replace configuration data.', function(done) {
+				var testGrpc = defaultInstance();
+				var testYANG = '{"Cisco-IOS-XR-ip-static-cfg:router-static": {"default-vrf": {"address-family": {"vrfipv4": {"vrf-unicast": {"vrf-prefixes": {"vrf-prefix": [{"prefix": "0.0.0.0", "vrf-route": {"vrf-next-hop-table": {"vrf-next-hop-next-hop-address": [{"next-hop-address": "10.0.2.2"}]}}, "prefix-length": 0}, {"prefix": "1.2.3.5", "vrf-route": {"vrf-next-hop-table": {"vrf-next-hop-next-hop-address": [{"next-hop-address": "10.0.2.2"}]}}, "prefix-length": 32}]}}}}}}}';
+				var testRequest = testGrpc.replaceConfig(0, testYANG);
+				testRequest.on('error', function(error) {
+					if (error) {
+						assert(true, false);
+						done(error);
+					} else {
+						assert(true, true);
+						done();
+					}
+				});
+				testRequest.on('data', function(data) {
+					if (data.errors) {
+						assert(true, false);
+						done(data.errors);
+					} else {
+						assert(true, true);
+						done();
+					}
+				});
+			});
+		});
+	});
+}
+
+// Uncertain on implementation details
+function testCliConfig() {}
+function testCommitReplace() {}
+function testCommitConfig() {}
+function testConfigDiscardChanges() {}
+
+function testGetOper() {
+	describe('index.js', function() {
+		describe('#getOper()', function() {
+			it('should get operational data.', function(done) {
+				var testGrpc = defaultInstance();
+				var testYANGPath = '{"Cisco-IOS-XR-cdp-oper:cdp": [null]}';
+				var testRequest = testGrpc.getOper(0, testYANGPath);
+				testRequest.on('data', function(data) {
+					data = data.toObject();
+					if (data.errors) {
+						assert(true, false);
+						// Not really certain how to properly do this.
+						done(data.errors);
+					} else {
+						assert(true, true);
+						done();
+					}
+				});
+			});
+		});
+	});
+}
+
+function testShowCmdTextOutput() {
+	describe('index.js', function() {
+		describe('#showCmdTextOutput()', function() {
+			it('should return CLI config result in text format.', function(done) {
+				var testGrpc = defaultInstance();
+				var testCli = 'show bgp neighbors';
+				var testRequest = testGrpc.showCmdTextOutput(0, testCli);
+				var accomplished = false;
+				testRequest.on('error', function(error) {
+					if (error) {
+						assert(true, false);
+						done(error);
+					}
+				});
+				testRequest.on('data', function(data) {
+					if (!data.errors) {
+						assert(true, true);
+						if (!accomplished) {
+							accomplished = true;
+							done();
+						}
+					}
+				});
+			});
+		});
+	});
+}
+
+function testShowCmdJSONOutput() {
+	describe('index.js', function() {
+		describe('#showCmdJSONOutput()', function() {
+			it('should return CLI config result in JSON format.', function(done) {
+				var testGrpc = defaultInstance();
+				var testCli = 'show bgp neighbors';
+				var testRequest = testGrpc.showCmdJSONOutput(0, testCli);
+				var accomplished = false;
+				testRequest.on('error', function(error) {
+					if (error) {
+						assert(true, false);
+						done(error);
+					}
+				});
+				testRequest.on('data', function(data) {
+					if (!data.errors) {
+						assert(true, true);
+						if (!accomplished) {
+							accomplished = true;
+							done();
+						}
+					}
+				});
 			});
 		});
 	});
