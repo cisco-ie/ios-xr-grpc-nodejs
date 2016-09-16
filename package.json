@@ -1,0 +1,33 @@
+{
+  "name": "ios-xr-grpc-nodejs",
+  "version": "6.0.1",
+  "description": "IOS-XR gRPC Connection Library for usage in NodeJS applications. Provides connectivity support for gRPC communication with IOS-XR routers.",
+  "license": "Apache v2",
+  "keywords": [
+    "iosxr",
+    "grpc",
+    "cisco"
+  ],
+  "main": "nodejs lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cisco-grpc-connection-libs/ios-xr-grpc-nodejs.git"
+  },
+  "scripts": {
+    "test": "mocha tests/index.js"
+  },
+  "dependencies": {
+    "grpc": "^0.15.0",
+    "google-protobuf": "^3.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^3.0.0"
+  },
+  "author": "Cisco Innovation Edge",
+  "contributors": [
+    {
+      "name": "Remington Campbell",
+      "email": "remcampb@cisco.com"
+    }
+  ]
+}
