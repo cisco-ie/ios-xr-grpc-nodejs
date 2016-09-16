@@ -1,5 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+# Remington Campbell <remcampb@cisco.com>
 
 # Add shared folder pathing here.
 # host_src is a relative path.
