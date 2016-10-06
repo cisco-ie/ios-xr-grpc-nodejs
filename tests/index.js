@@ -31,6 +31,7 @@ function main() {
 	testMsgDiscardChangesArgs();
 	testMsgGetOperArgs();
 	testMsgShowCmdArgs();
+	testMsgCreateSubsArgs();
 	// Service Testing
 	testGetConfig();
 	testMergeConfig();
@@ -45,6 +46,7 @@ function main() {
 	testGetOper();
 	testShowCmdTextOutput();
 	testShowCmdJSONOutput();
+	testCreateSubscription();
 }
 
 function defaultInstance() {
@@ -284,6 +286,27 @@ function testMsgShowCmdArgs() {
 	});
 }
 
+function testMsgCreateSubsArgs() {
+	describe('index.js', function() {
+		describe('#msgs.CreateSubsArgs()', function() {
+			it('should return a CreateSubsArgs object.', function() {
+				var testParams = {
+					reqId: 0,
+					encode: 2,
+					subId: '0'
+				};
+				var testGrpc = defaultInstance();
+				var testArg = testGrpc.msgs.CreateSubsArgs(testParams.reqId, testParams.encode, testParams.subId);
+				var index = 0;
+				for (var key in testParams) {
+					assert(true, testParams[key] == testArg.array[index]);
+					index++;
+				}
+			});
+		});
+	});
+}
+
 function testGetConfig() {
 	describe('index.js', function() {
 		describe('#getConfig()', function() {
@@ -295,7 +318,7 @@ function testGetConfig() {
 					data = data.toObject();
 					if (data.errors) {
 						assert(true, false);
-						// Not really certain how to properly do this.
+						// Full validation out of scope of library.
 						done(data.errors);
 					} else {
 						assert(true, true);
@@ -461,6 +484,33 @@ function testShowCmdJSONOutput() {
 				var testGrpc = defaultInstance();
 				var testCli = 'show bgp neighbors';
 				var testRequest = testGrpc.showCmdJSONOutput(0, testCli);
+				var accomplished = false;
+				testRequest.on('error', function(error) {
+					if (error) {
+						assert(true, false);
+						done(error);
+					}
+				});
+				testRequest.on('data', function(data) {
+					if (!data.errors) {
+						assert(true, true);
+						if (!accomplished) {
+							accomplished = true;
+							done();
+						}
+					}
+				});
+			});
+		});
+	});
+}
+
+function testCreateSubscription() {
+	describe('index.js', function() {
+		describe('#createSubscription()', function() {
+			it('should dial in to a subscription on a device.', function(done) {
+				var testGrpc = defaultInstance();
+				var testRequest = testGrpc.createSubscription(0, 2, '1');
 				var accomplished = false;
 				testRequest.on('error', function(error) {
 					if (error) {
