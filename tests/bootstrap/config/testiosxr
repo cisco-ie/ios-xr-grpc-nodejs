@@ -7,3 +7,11 @@ interface GigabitEthernet0/0/0/0
 grpc
  port 57500
 !
+telemetry model-driven
+ sensor-group 1
+ 	sensor-path Cisco-IOS-XR-infra-statsd-oper:infra-statistics/interfaces/interface/latest/generic-counters
+ !
+ subscription 1
+  sensor-group-id 1 sample-interval 5000
+ !
+!

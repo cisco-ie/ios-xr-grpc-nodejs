@@ -1,6 +1,6 @@
 {
   "name": "ios-xr-grpc-nodejs",
-  "version": "6.0.1",
+  "version": "6.1.1",
   "description": "IOS-XR gRPC Connection Library for usage in NodeJS applications. Provides connectivity support for gRPC communication with IOS-XR routers.",
   "license": "Apache v2",
   "keywords": [
