@@ -7,6 +7,7 @@ function main() {
 		password: 'vagrant'
 	};
 	var client = xrGrpc('11.1.1.254', 57500, null, metadata, null);
+	// Omitting nounmarshal param for same effect, & cleaner.
 	var subscription = client.createSubscription(0, null, '1');
 
 	subscription.on('error', function(error) {
